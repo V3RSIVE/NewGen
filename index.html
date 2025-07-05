@@ -1,0 +1,197 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewGen Technologies</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <style>
+        body { margin: 0; font-family: 'Arial', sans-serif; }
+        #hero { background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://via.placeholder.com/1920x1080?text=NewGen+Hero+Image'); }
+        #suit-model { height: 500px; }
+        .animate-slide { opacity: 0; transform: translateY(20px); transition: all 0.5s ease; }
+        .animate-slide.visible { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Header -->
+    <header class="fixed w-full bg-gray-900 bg-opacity-90 z-10">
+        <nav class="container mx-auto py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold">NewGen Technologies</div>
+            <ul class="flex space-x-6">
+                <li><a href="#home" class="hover:text-blue-400 transition">Home</a></li>
+                <li><a href="#products" class="hover:text-blue-400 transition">Products</a></li>
+                <li><a href="#about" class="hover:text-blue-400 transition">About</a></li>
+                <li><a href="#contact" class="hover:text-blue-400 transition">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center text-center" id="hero">
+        <div class="animate-slide">
+            <h1 class="text-5xl md:text-7xl font-bold mb-4">NewGen Technologies</h1>
+            <p class="text-xl md:text-2xl mb-6">Bringing Tomorrow's Innovations to Today</p>
+            <a href="#products" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full transition">Explore Our Solutions</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-gray-800">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12 animate-slide">About NewGen Technologies</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="animate-slide">
+                    <p class="text-lg">Founded in March 2025, NewGen Technologies is a futuristic industrial innovation firm headquartered in the United States. We are committed to delivering cutting-edge solutions in security, energy, infrastructure, and human performance, guided by our core values: Honesty, Integrity, Safety, Innovation, and Commitment.</p>
+                    <p class="text-lg mt-4">Our mission is to empower communities and industries with advanced technologies, from wearable exosuits to scalable energy systems, creating a more connected, secure, and sustainable future.</p>
+                </div>
+                <div class="animate-slide">
+                    <img src="https://via.placeholder.com/600x400?text=NewGen+HQ+Image" alt="NewGen Headquarters" class="rounded-lg shadow-lg w-full">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-20 bg-gray-900">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12 animate-slide">Our Innovations</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Adaptive Suit -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg animate-slide">
+                    <h3 class="text-2xl font-bold mb-4">Adaptive Suit</h3>
+                    <img src="https://via.placeholder.com/500x300?text=Adaptive+Suit+Image" alt="Adaptive Suit" class="rounded-lg mb-4 w-full">
+                    <p class="text-lg">A lightweight, multifunctional exosuit designed for both civilian and military applications. With VR immersion, biomechanical intelligence, and modular add-ons, it enhances mobility, strength, and precision for professionals, athletes, and those with neural disorders.</p>
+                    <a href="#contact" class="mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Learn More</a>
+                </div>
+                <!-- Project ARMIN -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg animate-slide">
+                    <h3 class="text-2xl font-bold mb-4">Project ARMIN</h3>
+                    <img src="https://via.placeholder.com/500x300?text=Project+ARMIN+Image" alt="Project ARMIN" class="rounded-lg mb-4 w-full">
+                    <p class="text-lg">An Advanced Renewable Modular Infrastructure Network delivering scalable, clean energy and internet connectivity to developing regions. ARMIN supports environmental recovery with smart water filtration and carbon offsetting systems.</p>
+                    <a href="#contact" class="mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Learn More</a>
+                </div>
+            </div>
+            <!-- Interactive 3D Model -->
+            <div class="mt-12">
+                <h3 class="text-3xl font-bold text-center mb-6 animate-slide">Explore the Adaptive Suit in 3D</h3>
+                <div id="suit-model" class="w-full"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-800">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12 animate-slide">Get in Touch</h2>
+            <div class="max-w-lg mx-auto animate-slide">
+                <div class="bg-gray-900 p-6 rounded-lg shadow-lg">
+                    <div class="mb-4">
+                        <label for="name" class="block text-lg mb-2">Name</label>
+                        <input type="text" id="name" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-600">
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="block text-lg mb-2">Email</label>
+                        <input type="email" id="email" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-600">
+                    </div>
+                    <div class="mb-4">
+                        <label for="message" class="block text-lg mb-2">Message</label>
+                        <textarea id="message" class="w-full p-3 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-600" rows="5"></textarea>
+                    </div>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded w-full transition">Send Message</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-6 bg-gray-900 text-center">
+        <p>&copy; 2025 NewGen Technologies. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Scroll animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('.animate-slide');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            elements.forEach(el => observer.observe(el));
+        });
+
+        // Three.js 3D Model
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 500, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, 500);
+        document.getElementById('suit-model').appendChild(renderer.domElement);
+
+        // Simple cube as a placeholder for the Adaptive Suit
+        const geometry = new THREE.BoxGeometry(1, 2, 0.5);
+        const material = new THREE.MeshBasicMaterial({ color: 0x00aaff, wireframe: true });
+        const suit = new THREE.Mesh(geometry, material);
+        scene.add(suit);
+
+        camera.position.z = 5;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            suit.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Responsive canvas
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, 500);
+            camera.aspect = window.innerWidth / 500;
+            camera.updateProjectionMatrix();
+        });
+    </script>
+</body>
+</html>
